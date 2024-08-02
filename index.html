@@ -15,6 +15,7 @@
 <body>
    
     <script type="text/javascript" src="modules/list.js"></script>
+    <script type="text/javascript" src="modules/datatable.js"></script>
     <script type="text/javascript" charset="utf-8">
 
         let header = {
@@ -47,14 +48,15 @@
                         select:"multiselect",
                         data:side_menu
                         }, 
-                        {},
                         {template: "Hello"}
                     ]      
                     },              
                     { view:"resizer"},
-                    {template: "Hello"}
-                    // {view:"datatable", value:"Profile"},
-                    // {view:"form", value:"Profile"}
+                    {
+                        view:"datatable", 
+                        autoConfig:true,
+                        data: small_film_set
+                    }
                 ]}
 			]
         });
