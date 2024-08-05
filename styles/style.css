@@ -1,0 +1,27 @@
+.header  {
+    background: #657583;
+}
+.header_label .webix_el_box{
+    color: white;
+}
+
+.header_button button {
+    color: white !important;
+}
+
+.header_button .webix_icon_btn {
+    color: white !important;
+}
+
+.side_menu .webix_view {
+    background: #eeeeee;
+}
+
+.webix_view.connection {
+    border-color: #eeeeee;
+}
+
+.webix_view.connection .webix_template {
+    color: green;
+    text-align: center;
+}

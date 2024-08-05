@@ -13,7 +13,8 @@
 	<link rel="stylesheet" type="text/css" href="sources/styles/app.css">-->
 </head>
 <body>
-   
+    
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
     <script type="text/javascript" src="modules/list.js"></script>
     <script type="text/javascript" src="modules/datatable.js"></script>
     <script type="text/javascript" src="modules/form.js"></script>
@@ -23,30 +24,21 @@
 			cols: [
 				{
                     view:"label", 
-                    label:"My App"
+                    label:"My App",
+                    css: "header_label"
                 },
 				{
                     view:"button", 
                     label:"Profile", 
                     type: "icon", 
                     icon: "wxi-user",
-                    autowidth: true
+                    autowidth: true,
+                    css: "webix_transparent header_button"
                 }
 			],  
             padding: 5,
-            
-		};
-		
-
-		// let footer = webix.ui({ 
-        //     view: template,
-        //     tamplate: "The software is provided by . All rights reserved (c)"   
-		// });
-
-
-		// let main = {
-			
-		// };
+            css: "header"
+		}
 
         let side_menu = { 
             rows: [
@@ -55,13 +47,18 @@
                     template:"#title#",
                     scroll:false,
                     select:"multiselect",
+                    autoheight: true,
                     data:side_options
                 }, 
+                {},
                 {
-                    template: "Connected"
+                    template:"<span class='webix_icon wxi-check'></span>Connected",
+                    autoheight: true,
+                    css: "connection"
                 }
             ],
-            width: 200
+            width: 200,
+            css: "side_menu"
         }
         
         let film_library = {
@@ -93,9 +90,17 @@
                 { cols:[
                     { view:"button", label:"Add new" , css: "webix_primary" },
                     { view:"button", label:"Clear" }
-                ]}
+                ],
+                    margin: 15
+                }
             ]
         }
+
+        //$$.html('<a href="http://webix.com">http://webix.com</a>')
+        let footer = { 
+            template: "The software is provided by . All rights reserved (c)",
+            autoheight: true
+		}
 
         webix.ui({
             rows: [
@@ -105,7 +110,8 @@
                     { view:"resizer" },
                     film_library,
                     edit_films
-                ]}
+                ]},
+                footer
 			]
         });
 
