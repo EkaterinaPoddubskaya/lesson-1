@@ -21,7 +21,10 @@
     border-color: #eeeeee;
 }
 
+.webix_template {
+    text-align: center;
+}
+
 .webix_view.connection .webix_template {
     color: green;
-    text-align: center;
 }
