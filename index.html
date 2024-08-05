@@ -16,13 +16,25 @@
    
     <script type="text/javascript" src="modules/list.js"></script>
     <script type="text/javascript" src="modules/datatable.js"></script>
+    <script type="text/javascript" src="modules/form.js"></script>
     <script type="text/javascript" charset="utf-8">
 
         let header = {
 			cols: [
-				{view:"label", label:"My App"},
-				{view:"button", value:"Profile"}
-			]
+				{
+                    view:"label", 
+                    label:"My App"
+                },
+				{
+                    view:"button", 
+                    label:"Profile", 
+                    type: "icon", 
+                    icon: "wxi-user",
+                    autowidth: true
+                }
+			],  
+            padding: 5,
+            
 		};
 		
 
@@ -34,29 +46,65 @@
 
 		// let main = {
 			
-		// };	
+		// };
+
+        let side_menu = { 
+            rows: [
+                {
+                    view:"list",
+                    template:"#title#",
+                    scroll:false,
+                    select:"multiselect",
+                    data:side_options
+                }, 
+                {
+                    template: "Connected"
+                }
+            ],
+            width: 200
+        }
+        
+        let film_library = {
+            view:"datatable", 
+            columns:[
+                { id:"title", header:"Title", fillspace:4},
+                { id:"year", header:"Year", fillspace:1},
+                { id:"votes", header:"Votes", fillspace:1},
+                { id:"rating", header:"Rating", fillspace:1},
+                { id:"rank", header:"Rank", fillspace:1},
+                { id:"category", header:"Category", fillspace:1}
+            ],
+            data: small_film_set,
+            gravity: 3
+        }
+        
+        let edit_films = {
+            view:"form",
+            autoheight: false,
+            minWidth: 200,
+            elements:[
+                { rows:[ 
+                    { template:"EDIT FILMS", type:"section" },
+                    { view:"text", label:"Title", value:"" },
+                    { view:"text", label:"Year", value:"" },
+                    { view:"text", label:"Rating", value:"" },
+                    { view:"text", label:"Votes", value:"" }
+                ]},
+                { cols:[
+                    { view:"button", label:"Add new" , css: "webix_primary" },
+                    { view:"button", label:"Clear" }
+                ]}
+            ]
+        }
 
         webix.ui({
             rows: [
 				header,
 				{cols: [      
-                    { rows: [
-                        {
-                        view:"list",
-                        template:"#title#",
-                        scroll:false,
-                        select:"multiselect",
-                        data:side_menu
-                        }, 
-                        {template: "Hello"}
-                    ]      
-                    },              
-                    { view:"resizer"},
-                    {
-                        view:"datatable", 
-                        autoConfig:true,
-                        data: small_film_set
-                    }
+                    side_menu,              
+                    { view:"resizer" },
+                    film_library,
+                    edit_films
                 ]}
 			]
         });
