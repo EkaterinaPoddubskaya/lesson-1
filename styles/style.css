@@ -1,15 +1,12 @@
-.header  {
+.header {
     background: #657583;
 }
 .header_label .webix_el_box{
     color: white;
 }
 
-.header_button button {
-    color: white !important;
-}
-
-.header_button .webix_icon_btn {
+.webix_transparent.header_button button,
+.webix_transparent.header_button .webix_icon_btn {
     color: white !important;
 }
 
@@ -17,14 +14,14 @@
     background: #eeeeee;
 }
 
-.webix_view.connection {
+.connection {
     border-color: #eeeeee;
 }
 
-.webix_template {
+.template {
     text-align: center;
 }
 
-.webix_view.connection .webix_template {
+.connection .webix_template {
     color: green;
 }
