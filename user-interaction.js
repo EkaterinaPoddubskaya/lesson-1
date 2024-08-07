@@ -18,10 +18,6 @@ $$("myaddnew").attachEvent("onItemClick", function() {
 	const yearInput = $$("myform").elements.year;
 	const ratingInput = $$("myform").elements.rating;
 	const votesInput = $$("myform").elements.votes;
-    console.log(titleInput.getValue());
-    console.log(yearInput.getValue());
-    console.log(ratingInput.getValue());
-    console.log(votesInput.getValue());
 
     const validation_check = $$("myform").validate();
     if (validation_check) {
@@ -32,9 +28,12 @@ $$("myaddnew").attachEvent("onItemClick", function() {
             votes: votesInput.getValue()
         }
         $$('mytable').add(film);
+        webix.message({
+            text: "Your film is successfully added to the list!",
+            type: "success"
+        });
     }
    
-    
 	// titleInput.setValue("");
     // yearInput.setValue("");
     // ratingInput.setValue("");

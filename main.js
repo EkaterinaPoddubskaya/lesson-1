@@ -57,10 +57,10 @@ const editFilmsForm = {
     elements:[
         { rows:[ 
             { template:"EDIT FILMS", type:"section" },
-            { view:"text", label:"Title", name: "title", value:"" },
-            { view:"text", label:"Year", name: "year", value:"" },
-            { view:"text", label:"Rating", name: "rating", value:"" },
-            { view:"text", label:"Votes", name: "votes", value:"" }
+            { view:"text", label:"Title", name: "title", value:"", invalidMessage: "Title must not be empty" },
+            { view:"text", label:"Year", name: "year", value:"", invalidMessage: "Enter year between 1970 and " + new Date().getFullYear() },
+            { view:"text", label:"Rating", name: "rating", value:"", invalidMessage: "Rating can not be empty or equal to 0" },
+            { view:"text", label:"Votes", name: "votes", value:"", invalidMessage: "Enter votes between 1 and 100000 exclusively" }
         ]},
         { cols:[
             { view:"button", label:"Add new" , id:"myaddnew", css: "webix_primary" },
@@ -72,13 +72,13 @@ const editFilmsForm = {
     rules:{
         title: webix.rules.isNotEmpty,
         year: function(value) {
-          return (value > 1970) && (value < new Date().getFullYear());
+          return (value >= 1970) && (value <= new Date().getFullYear());
         },
         rating: function(value) {
-            return webix.rules.isNotEmpty && (value != 0);
+            return value != 0;
         },
         votes: function(value) {
-            return (value >= 0) && (value < 100000);
+            return (value > 0) && (value < 100000);
         }
     }
 }
