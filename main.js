@@ -64,7 +64,7 @@ const editFilmsForm = {
         ]},
         { cols:[
             { view:"button", label:"Add new" , id:"myaddnew", css: "webix_primary" },
-            { view:"button", label:"Clear" }
+            { view:"button", label:"Clear" , id:"myclear" }
         ],
             margin: 15
         }
@@ -72,7 +72,7 @@ const editFilmsForm = {
     rules:{
         title: webix.rules.isNotEmpty,
         year: function(value) {
-          return (value >= 1970) && (value <= new Date().getFullYear());
+            return (value >= 1970) && (value <= new Date().getFullYear());
         },
         rating: function(value) {
             return value != 0;
