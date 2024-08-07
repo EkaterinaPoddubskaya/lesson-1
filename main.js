@@ -42,6 +42,7 @@ const sideMenuList = {
 
 const filmLibraryTable = {
     view:"datatable", 
+    id: "mytable",
     autoConfig: true,
     data: SMALL_FILM_SET,
     gravity: 3, 
@@ -50,18 +51,19 @@ const filmLibraryTable = {
 
 const editFilmsForm = {
     view:"form",
+    id: "myform",
     autoheight: false,
     minWidth: 200,
     elements:[
         { rows:[ 
             { template:"EDIT FILMS", type:"section" },
-            { view:"text", label:"Title", value:"" },
-            { view:"text", label:"Year", value:"" },
-            { view:"text", label:"Rating", value:"" },
-            { view:"text", label:"Votes", value:"" }
+            { view:"text", label:"Title", name: "title", value:"" },
+            { view:"text", label:"Year", name: "year", value:"" },
+            { view:"text", label:"Rating", name: "rating", value:"" },
+            { view:"text", label:"Votes", name: "votes", value:"" }
         ]},
         { cols:[
-            { view:"button", label:"Add new" , css: "webix_primary" },
+            { view:"button", label:"Add new" , id:"myaddnew", css: "webix_primary" },
             { view:"button", label:"Clear" }
         ],
             margin: 15
