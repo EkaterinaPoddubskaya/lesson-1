@@ -23,14 +23,17 @@ $$("myaddnew").attachEvent("onItemClick", function() {
     console.log(ratingInput.getValue());
     console.log(votesInput.getValue());
 
-    const film = {
-        title: titleInput.getValue(),
-        year: yearInput.getValue(),
-        rating: ratingInput.getValue(), 
-        votes: votesInput.getValue()
+    const validation_check = $$("myform").validate();
+    if (validation_check) {
+        const film = {
+            title: titleInput.getValue(),
+            year: yearInput.getValue(),
+            rating: ratingInput.getValue(), 
+            votes: votesInput.getValue()
+        }
+        $$('mytable').add(film);
     }
-
-    $$('mytable').add(film);
+   
     
 	// titleInput.setValue("");
     // yearInput.setValue("");

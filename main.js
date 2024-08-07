@@ -68,7 +68,19 @@ const editFilmsForm = {
         ],
             margin: 15
         }
-    ]
+    ],
+    rules:{
+        title: webix.rules.isNotEmpty,
+        year: function(value) {
+          return (value > 1970) && (value < new Date().getFullYear());
+        },
+        rating: function(value) {
+            return webix.rules.isNotEmpty && (value != 0);
+        },
+        votes: function(value) {
+            return (value >= 0) && (value < 100000);
+        }
+    }
 }
 
 const footer = { 
