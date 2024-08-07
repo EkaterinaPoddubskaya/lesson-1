@@ -8,6 +8,7 @@ const header = {
         {
             view:"button", 
             label:"Profile", 
+            id: "myprofile",
             type: "icon", 
             icon: "wxi-user",
             autowidth: true,
