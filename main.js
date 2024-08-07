@@ -32,7 +32,7 @@ const sideMenuList = {
         {
             template:"<span class='webix_icon wxi-check'></span>Connected",
             autoheight: true,
-            css: "connection template"
+            css: "connection centered-text"
         }
     ],
     width: 200,
@@ -71,7 +71,7 @@ const editFilmsForm = {
 const footer = { 
     template: "The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)",
     autoheight: true,
-    css: "template"
+    css: "centered-text"
 }
 
 webix.ui({

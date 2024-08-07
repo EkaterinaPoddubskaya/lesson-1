@@ -1,13 +1,11 @@
 .header {
     background: #657583;
 }
-.header_label .webix_el_box{
-    color: white;
-}
 
+.header_label .webix_el_box,
 .webix_transparent.header_button button,
 .webix_transparent.header_button .webix_icon_btn {
-    color: white !important;
+    color: white;
 }
 
 .side_menu .webix_view {
@@ -18,7 +16,7 @@
     border-color: #eeeeee;
 }
 
-.template {
+.centered-text {
     text-align: center;
 }
 
