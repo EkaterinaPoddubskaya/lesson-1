@@ -73,10 +73,23 @@ const editFilmsForm = {
         { cols:[
             { view:"button", label:"Add new" , id:"addNewButton", css: "webix_primary", 
                 click: () => {
-                    const formInput = $$("filmsForm").getValues();
-                    if ($$("filmsForm").validate()) {
-                        $$("filmsTable").add(formInput);
-                        $$("filmsForm").clear();
+                    const form = $$("filmsForm");
+                    if (form.validate()) {
+                        const { title ,year, rating, votes } = form.elements;
+                        
+                        const titleInput = title.getValue().replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
+                        const yearInput = parseInt(year.getValue());
+                        const ratingInput = parseFloat(rating.getValue());
+                        const votesInput = parseInt(votes.getValue());
+                        
+                        $$("filmsTable").add({
+                            title: titleInput,
+                            year: yearInput,
+                            rating: ratingInput,
+                            votes: votesInput
+                        });
+
+                        form.clear();
                         webix.message({
                             text: "Your film is successfully added to the list!",
                             type: "success"
@@ -92,8 +105,9 @@ const editFilmsForm = {
                     })
                     .then(
                         () => {
-                            $$("filmsForm").clear();
-                            $$("filmsForm").clearValidation();
+                            const form = $$("filmsForm");
+                            form.clear();
+                            form.clearValidation();
                         }
                     );
                 }
@@ -105,13 +119,13 @@ const editFilmsForm = {
     rules:{
         title: webix.rules.isNotEmpty,
         year: value => {
-            return (value >= 1970) && (value <= new Date().getFullYear());
+            return Number.isInteger(value) && (value >= 1970) && (value <= new Date().getFullYear());
         },
         rating: value => {
-            return value != 0;
+            return webix.rules.isNumber(value) && value != 0;   
         },
         votes: value => {
-            return (value > 0) && (value < 100000);
+            return Number.isInteger(value) && (value > 0) && (value < 100000);
         }
     }
 }
