@@ -8,10 +8,19 @@ const header = {
         {
             view:"button", 
             label:"Profile", 
+            id: "profileButton",
             type: "icon", 
             icon: "wxi-user",
             autowidth: true,
-            css: "webix_transparent header_button"
+            css: "webix_transparent header_button",
+            popup: {
+                view:"popup",
+                body: {
+                    view:"list", 
+                    data:[ "Settings", "Log out" ],
+                    autoheight: true
+                }
+            }    
         }
     ],  
     padding: 5,
@@ -41,6 +50,7 @@ const sideMenuList = {
 
 const filmLibraryTable = {
     view:"datatable", 
+    id: "filmsTable",
     autoConfig: true,
     data: SMALL_FILM_SET,
     gravity: 3, 
@@ -49,23 +59,75 @@ const filmLibraryTable = {
 
 const editFilmsForm = {
     view:"form",
+    id: "filmsForm",
     autoheight: false,
     minWidth: 200,
     elements:[
         { rows:[ 
             { template:"EDIT FILMS", type:"section" },
-            { view:"text", label:"Title", value:"" },
-            { view:"text", label:"Year", value:"" },
-            { view:"text", label:"Rating", value:"" },
-            { view:"text", label:"Votes", value:"" }
+            { view:"text", label:"Title", name: "title", value:"", invalidMessage: "Title must not be empty" },
+            { view:"text", label:"Year", name: "year", value:"", invalidMessage: `Enter year between 1970 and ${new Date().getFullYear()}` },
+            { view:"text", label:"Rating", name: "rating", value:"", invalidMessage: "Rating can not be empty or equal to 0" },
+            { view:"text", label:"Votes", name: "votes", value:"", invalidMessage: "Enter votes between 1 and 100000 exclusively" }
         ]},
         { cols:[
-            { view:"button", label:"Add new" , css: "webix_primary" },
-            { view:"button", label:"Clear" }
+            { view:"button", label:"Add new" , id:"addNewButton", css: "webix_primary", 
+                click: () => {
+                    const form = $$("filmsForm");
+                    if (form.validate()) {
+                        const { title ,year, rating, votes } = form.elements;
+                        
+                        const titleInput = title.getValue().replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
+                        const yearInput = parseInt(year.getValue());
+                        const ratingInput = parseFloat(rating.getValue());
+                        const votesInput = parseInt(votes.getValue());
+                        
+                        $$("filmsTable").add({
+                            title: titleInput,
+                            year: yearInput,
+                            rating: ratingInput,
+                            votes: votesInput
+                        });
+
+                        form.clear();
+                        webix.message({
+                            text: "Your film is successfully added to the list!",
+                            type: "success"
+                        });
+                    }
+                }
+            },
+            { view:"button", label:"Clear" , id:"clearButton",
+                click: () => {
+                    webix.confirm({
+                        title: "Form is about to be cleared",
+                        text: "Do you want to clear the form?"
+                    })
+                    .then(
+                        () => {
+                            const form = $$("filmsForm");
+                            form.clear();
+                            form.clearValidation();
+                        }
+                    );
+                }
+             }
         ],
             margin: 15
         }
-    ]
+    ],
+    rules:{
+        title: webix.rules.isNotEmpty,
+        year: value => {
+            return Number.isInteger(value) && (value >= 1970) && (value <= new Date().getFullYear());
+        },
+        rating: value => {
+            return webix.rules.isNumber(value) && value != 0;   
+        },
+        votes: value => {
+            return Number.isInteger(value) && (value > 0) && (value < 100000);
+        }
+    }
 }
 
 const footer = { 
