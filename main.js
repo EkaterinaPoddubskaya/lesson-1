@@ -8,7 +8,6 @@ const header = {
         {
             view:"button", 
             label:"Profile", 
-            id: "profileButton",
             type: "icon", 
             icon: "wxi-user",
             autowidth: true,
@@ -20,9 +19,9 @@ const header = {
                     data:[ "Settings", "Log out" ],
                     autoheight: true
                 }
-            }    
+            }
         }
-    ],  
+    ],
     padding: 5,
     css: "header"
 }
@@ -57,6 +56,21 @@ const filmLibraryTable = {
     scroll: "y"
 }
 
+titleParseEdit = input => input.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim()
+yearParseEdit = input => { 
+    if(!input) return null;
+    return parseInt(input.toString().match(/[0-9]+/));
+}
+ratingParseEdit = input => { 
+    if (!input) return null;
+    const value = parseFloat(input.toString().match(/[0-9]+.?[0-9]*/));
+    return parseFloat(value.toFixed(2)); 
+}
+votesParseEdit = input => { 
+    if (!input) return null;
+    return parseInt(input.toString().match(/[0-9]+/));
+}
+
 const editFilmsForm = {
     view:"form",
     id: "filmsForm",
@@ -66,122 +80,78 @@ const editFilmsForm = {
         { rows:[ 
             { template:"EDIT FILMS", type:"section" },
             { 
-                view:"text", label:"Title", name: "title", id: "title", value:"", 
+                view:"text", label:"Title", name: "title", value:"", 
                 format: {
-                    parse: (input) => { 
-                        return input.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
-                    },
-                    edit: (input) => { 
-                        return input.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
-                    }
+                    parse: titleParseEdit,
+                    edit: titleParseEdit
                 },
                 invalidMessage: "Title must not be empty", 
                 validate: webix.rules.isNotEmpty 
             },
             { view:"text", label:"Year", name: "year", id: "year", value:"", 
                 format: {
-                    parse: (input) => { 
-                        let value = parseInt(input.toString().match(/[0-9]+/));
-                        if (value > 9999) {
-                            value = parseInt(value.toString().slice(0, 4));
-                        }
-                        if (value) {
-                            return value;
-                        }
-                        return NaN; 
-                    },
-                    edit: (input) => { 
-                        let value = parseInt(input.toString().match(/[0-9]+/));
-                        if (value > 9999) {
-                            value = parseInt(value.toString().slice(0, 4));
-                        }
-                        if (value) {
-                            return value;
-                        }
-                        return ""; 
-                    }
-                }, 
-                invalidMessage: "",
+                    parse: yearParseEdit,
+                    edit: yearParseEdit
+                },
                 validate(value) {
-                    let invMessage = "Year must be a whole number";
+                    let invalidMeassage = "Year must be a whole number";
+                    let noInvalidMessage = false;
+                    const startYear = "1970";
+                    const currentYear = new Date().getFullYear();
                     if (parseInt(value) == value) {
-                        if ((value >= 1970) && (value <= new Date().getFullYear())) {
-                            return true;
+                        if ((value >= startYear) && (value <= currentYear)) {
+                            noInvalidMessage = true;
                         }
-                        invMessage = `Enter year between 1970 and ${new Date().getFullYear()}`;
+                        invalidMeassage = `Enter year between ${startYear} and ${currentYear}`;
                     } 
-                    $$("year").define("invalidMessage", invMessage);
-                    return false;
+                    $$("year").define("invalidMessage", invalidMeassage);
+                    return noInvalidMessage;
                 }
             },
             { 
                 view:"text", label:"Rating", name: "rating", id: "rating", value:"", 
                 format: {
-                    parse: (input) => { 
-                        const value = parseFloat(input.toString().match(/[0-9]+.?[0-9]*/));
-                        if (value) {
-                            return parseFloat(value.toFixed(2));
-                        }
-                        return NaN; 
-                    },
-                    edit: (input) => { 
-                        const value = parseFloat(input.toString().match(/[0-9]+.?[0-9]*/));
-                        if (value) {
-                            return parseFloat(value.toFixed(2));
-                        }
-                        return ""; 
-                    }
+                    parse: ratingParseEdit,
+                    edit: ratingParseEdit
                 }, 
-                invalidMessage: "", 
                 validate(value) {
-                    let invMessage = "Rating can not be empty";
+                    let invalidMessage = "Rating can not be empty";
+                    let noInvalidMessage = false;
                     if (webix.rules.isNumber(value)) {
                         if (value > 0 && value <= 10) {
-                            return true;
+                            noInvalidMessage = true;
                         }
-                        invMessage = "Enter rating between 0 and 10";
+                        invalidMessage = "Enter rating between 0 and 10";
                     }
-                    $$("rating").define("invalidMessage", invMessage);
-                    return  false;
+                    $$("rating").define("invalidMessage", invalidMessage);
+                    return  noInvalidMessage;
                 }
             },
             { 
                 view:"text", label:"Votes", name: "votes", id: "votes", value:"", 
                 format: {
-                    parse: (input) => { 
-                        let value = parseInt(input.toString().match(/[0-9]+/));
-                        if (value) {
-                            return value;
-                        }
-                        return NaN; 
-                    },
-                    edit: (input) => { 
-                        let value = parseInt(input.toString().match(/[0-9]+/));
-                        if (value) {
-                            return value;
-                        }
-                        return ""; 
-                    }
+                    parse: votesParseEdit,
+                    edit: votesParseEdit
                 }, 
-                invalidMessage: "", 
                 validate(value) {
-                    let invMessage = "Votes must be a whole number";
+                    let invalidMessage = "Votes must be a whole number";
+                    let noInvalidMessage = false;
                     if (parseInt(value) == value) {
                         if ((value > 0) && (value < 100000)) {
-                            return true;
+                            noInvalidMessage = true;
                         }
-                        invMessage = "Enter votes between 1 and 100000 exclusively";
+                        invalidMessage = "Enter votes between 1 and 100000 exclusively";
                     } 
-                    $$("votes").define("invalidMessage", invMessage);
-                    return false;
+                    $$("votes").define("invalidMessage", invalidMessage);
+                    return noInvalidMessage;
                 }
             }
         ]},
         { cols:[
-            { view:"button", label:"Add new" , id:"addNewButton", css: "webix_primary", 
+            { view:"button", label:"Add new", css: "webix_primary", 
                 click: () => {
                     const form = $$("filmsForm");
-                    if (form.validate()) {                
+                    if (form.validate()) {
                         $$("filmsTable").add(form.getValues());
                         form.clear();
                         webix.message({
@@ -191,7 +161,7 @@ const editFilmsForm = {
                     }
                 }
             },
-            { view:"button", label:"Clear" , id:"clearButton",
+            { view:"button", label:"Clear",
                 click: () => {
                     webix.confirm({
                         title: "Form is about to be cleared",
@@ -212,7 +182,7 @@ const editFilmsForm = {
     ],
     elementsConfig:{
         on:{
-           'onTimedKeyPress'() {
+           onTimedKeyPress() {
                 this.validate();
             }
         }
