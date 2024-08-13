@@ -56,21 +56,6 @@ const filmLibraryTable = {
     scroll: "y"
 }
 
-titleParseEdit = input => input.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim()
-yearParseEdit = input => { 
-    if(!input) return null;
-    return parseInt(input.toString().match(/[0-9]+/));
-}
-ratingParseEdit = input => { 
-    if (!input) return null;
-    const value = parseFloat(input.toString().match(/[0-9]+.?[0-9]*/));
-    return parseFloat(value.toFixed(2)); 
-}
-votesParseEdit = input => { 
-    if (!input) return null;
-    return parseInt(input.toString().match(/[0-9]+/));
-}
-
 const editFilmsForm = {
     view:"form",
     id: "filmsForm",
@@ -81,70 +66,28 @@ const editFilmsForm = {
             { template:"EDIT FILMS", type:"section" },
             { 
                 view:"text", label:"Title", name: "title", value:"", 
-                format: {
-                    parse: titleParseEdit,
-                    edit: titleParseEdit
-                },
+                format: { parse: parseEditTitle, edit: parseEditTitle },
                 invalidMessage: "Title must not be empty", 
                 validate: webix.rules.isNotEmpty 
             },
             { view:"text", label:"Year", name: "year", id: "year", value:"", 
-                format: {
-                    parse: yearParseEdit,
-                    edit: yearParseEdit
-                },
+                format: { parse: parseEditYear, edit: parseEditYear },
                 validate(value) {
-                    let invalidMeassage = "Year must be a whole number";
-                    let noInvalidMessage = false;
-                    const startYear = "1970";
+                    const startYear = 1970;
                     const currentYear = new Date().getFullYear();
-                    if (parseInt(value) == value) {
-                        if ((value >= startYear) && (value <= currentYear)) {
-                            noInvalidMessage = true;
-                        }
-                        invalidMeassage = `Enter year between ${startYear} and ${currentYear}`;
-                    } 
-                    $$("year").define("invalidMessage", invalidMeassage);
-                    return noInvalidMessage;
+                    const invalidMessage1 = `Enter year between ${startYear} and ${currentYear}`;
+                    return validateFormElements(value, startYear, currentYear, invalidMessage1, "Year must be a number", "year");
                 }
             },
             { 
                 view:"text", label:"Rating", name: "rating", id: "rating", value:"", 
-                format: {
-                    parse: ratingParseEdit,
-                    edit: ratingParseEdit
-                }, 
-                validate(value) {
-                    let invalidMessage = "Rating can not be empty";
-                    let noInvalidMessage = false;
-                    if (webix.rules.isNumber(value)) {
-                        if (value > 0 && value <= 10) {
-                            noInvalidMessage = true;
-                        }
-                        invalidMessage = "Enter rating between 0 and 10";
-                    }
-                    $$("rating").define("invalidMessage", invalidMessage);
-                    return  noInvalidMessage;
-                }
+                format: { parse: parseEditRating, edit: parseEditRating }, 
+                validate: value => validateFormElements(value, 0, 10, "Enter rating between 0 and 10", "Rating must be a number", "rating")
             },
             { 
                 view:"text", label:"Votes", name: "votes", id: "votes", value:"", 
-                format: {
-                    parse: votesParseEdit,
-                    edit: votesParseEdit
-                }, 
-                validate(value) {
-                    let invalidMessage = "Votes must be a whole number";
-                    let noInvalidMessage = false;
-                    if (parseInt(value) == value) {
-                        if ((value > 0) && (value < 100000)) {
-                            noInvalidMessage = true;
-                        }
-                        invalidMessage = "Enter votes between 1 and 100000 exclusively";
-                    } 
-                    $$("votes").define("invalidMessage", invalidMessage);
-                    return noInvalidMessage;
-                }
+                format: { parse: parseEditVotes, edit: parseEditVotes }, 
+                validate: value => validateFormElements(value, 1, 99999, "Enter votes between 1 and 99999", "Votes must be a number", "votes")
             }
         ]},
         { cols:[
