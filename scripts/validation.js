@@ -1,15 +1,17 @@
-validateFormElements = (value, minValue, maxValue, invalidMes1, invalidMes2, view) => {
+validateFormElements = (value, type, minValue, maxValue, view) => {
     let invalidMessage = "";
-    if (view == "rating") {
-        if (webix.rules.isNumber(value)) {
-            if (!(value > minValue) || !(value <= maxValue)) invalidMessage = invalidMes1;
-        } else invalidMessage = invalidMes2;
-    } else {
-        if (parseInt(value) == value) {
-            if (!(value >= minValue) || !(value <= maxValue)) invalidMessage = invalidMes1;
-        } else invalidMessage = invalidMes2;
-    }
+    const invalidRangeMsg = `Enter ${view} between ${minValue} and ${maxValue}`;
+    const viewNFirstLetterUppercase = view.charAt(0).toUpperCase() + view.slice(1);
+    const invalidValueTypeMsg = `${viewNFirstLetterUppercase} must be a number`;
+
+    if (webix.rules.isNumber(value)) {
+        if (type == "float" && value == minValue) {
+            invalidMessage = `${viewNFirstLetterUppercase} can not be equal to ${minValue}`;
+        } else if (!(value >= minValue) || !(value <= maxValue)) {
+            invalidMessage = invalidRangeMsg;
+        } 
+    } else invalidMessage = invalidValueTypeMsg;
+
     $$(view).define("invalidMessage", invalidMessage);
-    if (invalidMessage) return false;
-    else return true;
+    return !invalidMessage;
 }

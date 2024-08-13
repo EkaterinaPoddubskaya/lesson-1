@@ -75,19 +75,18 @@ const editFilmsForm = {
                 validate(value) {
                     const startYear = 1970;
                     const currentYear = new Date().getFullYear();
-                    const invalidMessage1 = `Enter year between ${startYear} and ${currentYear}`;
-                    return validateFormElements(value, startYear, currentYear, invalidMessage1, "Year must be a number", "year");
+                    return validateFormElements(value, "int", startYear, currentYear, "year");
                 }
             },
             { 
                 view:"text", label:"Rating", name: "rating", id: "rating", value:"", 
                 format: { parse: parseEditRating, edit: parseEditRating }, 
-                validate: value => validateFormElements(value, 0, 10, "Enter rating between 0 and 10", "Rating must be a number", "rating")
+                validate: value => validateFormElements(value, "float", 0, 10, "rating")
             },
             { 
                 view:"text", label:"Votes", name: "votes", id: "votes", value:"", 
                 format: { parse: parseEditVotes, edit: parseEditVotes }, 
-                validate: value => validateFormElements(value, 1, 99999, "Enter votes between 1 and 99999", "Votes must be a number", "votes")
+                validate: value => validateFormElements(value, "int", 1, 99999, "votes")
             }
         ]},
         { cols:[
