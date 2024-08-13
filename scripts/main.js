@@ -63,7 +63,7 @@ const editFilmsForm = {
     minWidth: 200,
     elements:[
         { rows:[ 
-            { template:"EDIT FILMS", type:"section" },
+            { template:"Edit films", type:"section" },
             { 
                 view:"text", label:"Title", name: "title", value:"", 
                 format: { parse: parseEditTitle, edit: parseEditTitle },

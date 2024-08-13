@@ -5,7 +5,7 @@ validateFormElements = (value, type, minValue, maxValue, view) => {
     const invalidValueTypeMsg = `${viewNFirstLetterUppercase} must be a number`;
 
     if (webix.rules.isNumber(value)) {
-        if (type == "float" && value == minValue) {
+        if (type === "float" && value === minValue) {
             invalidMessage = `${viewNFirstLetterUppercase} can not be equal to ${minValue}`;
         } else if (!(value >= minValue) || !(value <= maxValue)) {
             invalidMessage = invalidRangeMsg;
