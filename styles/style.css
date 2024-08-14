@@ -16,10 +16,27 @@
     border-color: #eeeeee;
 }
 
-.centered-text {
+.connection .webix_template {
+    color: green;
+}
+
+.centered_text, 
+.centered_text .webix_column {
     text-align: center;
 }
 
-.connection .webix_template {
-    color: green;
+.left_align_text.webix_column {
+    text-align: left;
+}
+
+.light_grey {
+    background: #F4F5F9;
+}
+
+.light_blue {
+    background: #E1EFFA;
+}
+
+.orange_hover .wxi-trash:hover {
+    color: orange;
 }

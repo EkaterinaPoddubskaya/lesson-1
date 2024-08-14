@@ -32,15 +32,20 @@ const sideMenuList = {
             view:"list",
             template:"#title#",
             scroll:false,
-            select:"true",
+            select: true,
             autoheight: true,
-            data:SIDE_OPTIONS
+            data:SIDE_OPTIONS,
+            on: {
+                onAfterSelect:(viewId) => { 
+                  $$(viewId).show();
+                }
+            }
         }, 
         {},
         {
             template:"<span class='webix_icon wxi-check'></span>Connected",
             autoheight: true,
-            css: "connection centered-text"
+            css: "connection centered_text"
         }
     ],
     width: 200,
@@ -50,11 +55,48 @@ const sideMenuList = {
 const filmLibraryTable = {
     view:"datatable", 
     id: "filmsTable",
-    autoConfig: true,
-    data: SMALL_FILM_SET,
-    gravity: 3, 
-    scroll: "y"
+    columns:[
+        { id: "rank", header: "", width: 50 , css: "light_grey" },
+        { id: "title", header: ["Film Title", {content: "textFilter"}], sort: "string", fillspace: true, css: "left_align_text" },
+        { id: "year", header: ["Released", {content: "textFilter"}], sort: "int" },
+        { id: "votes", header: ["Votes", {content: "textFilter"}], sort: "int" },
+        { id: "rating", header:["Rating", {content: "textFilter"}], sort: "int" },
+        { header: "", template:"{common.trashIcon()}", css: "orange_hover" }
+    ],
+    url: "data/films.js",
+    scheme: {
+        $init(obj) {   
+            if (!webix.rules.isNumber(obj.votes)) {
+                obj.rank = +obj.rank;
+                obj.year = +obj.year;
+                obj.votes = parseInt(obj.votes.replace(",", ""));
+                obj.rating = parseFloat(obj.rating.replace(",", "."));
+            } else {
+                const newIdRank = $$("filmsTable").count() + 1;
+                obj.id = newIdRank;
+                obj.rank = newIdRank;
+            }
+        },
+    },
+    editable: true,
+    form: "filmsForm",
+    onClick:{
+        "wxi-trash"(e, id) {
+            this.remove(id);
+            const form = $$("filmsForm");
+            if (form.getValues().id == id) {
+                form.clear();
+            }
+            return false;
+        }
+    }, 
+    select: true,
+    css: "centered_text",
+    hover: "light_blue",
+    scroll: "y",
+    gravity: 3
 }
+    
 
 const editFilmsForm = {
     view:"form",
@@ -70,10 +112,11 @@ const editFilmsForm = {
                 invalidMessage: "Title must not be empty", 
                 validate: webix.rules.isNotEmpty 
             },
-            { view:"text", label:"Year", name: "year", id: "year", value:"", 
+            { 
+                view:"text", label:"Year", name: "year", id: "year", value:"", 
                 format: { parse: parseEditYear, edit: parseEditYear },
                 validate(value) {
-                    const startYear = 1970;
+                    const startYear = 1921;
                     const currentYear = new Date().getFullYear();
                     return validateFormElements(value, "int", startYear, currentYear, "year");
                 }
@@ -86,24 +129,35 @@ const editFilmsForm = {
             { 
                 view:"text", label:"Votes", name: "votes", id: "votes", value:"", 
                 format: { parse: parseEditVotes, edit: parseEditVotes }, 
-                validate: value => validateFormElements(value, "int", 1, 99999, "votes")
+                validate: value => validateFormElements(value, "int", 1, 999999, "votes")
             }
         ]},
         { cols:[
-            { view:"button", label:"Add new", css: "webix_primary", 
+            { 
+                view:"button", label:"Add new", css: "webix_primary", 
                 click: () => {
-                    const form = $$("filmsForm");
+                    const form = $$("filmsForm");            
                     if (form.validate()) {
-                        $$("filmsTable").add(form.getValues());
+                        let messageText = "";
+                        const table = $$("filmsTable");
+                        const formId = form.getValues().id; 
+                        if (formId) {
+                            table.updateItem(formId, form.getValues());
+                            messageText = "Your changes are successfully saved!";
+                        } else {
+                            table.add(form.getValues());
+                            messageText = "Your film is successfully added to the list!";
+                        }
                         form.clear();
                         webix.message({
-                            text: "Your film is successfully added to the list!",
+                            text: messageText,
                             type: "success"
                         });
                     }
                 }
             },
-            { view:"button", label:"Clear",
+            { 
+                view:"button", label:"Clear",
                 click: () => {
                     webix.confirm({
                         title: "Form is about to be cleared",
@@ -134,7 +188,16 @@ const editFilmsForm = {
 const footer = { 
     template: "The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved (c)",
     autoheight: true,
-    css: "centered-text"
+    css: "centered_text"
+}
+
+const multiview = {
+    cells: [
+        { id: "Dashboard", cols: [filmLibraryTable, editFilmsForm] },
+        { id: "Users", template: "Users view" },
+        { id: "Products", template: "Products view" },
+        { id: "Locations", template: "" }
+    ]
 }
 
 webix.ui({
@@ -143,9 +206,8 @@ webix.ui({
         {cols: [
             sideMenuList,
             { view:"resizer" },
-            filmLibraryTable,
-            editFilmsForm
+            multiview
         ]},
         footer
     ]
-});
+})
