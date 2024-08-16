@@ -17,7 +17,7 @@ const usersToolbar = {
             view:"text", id:"userInput", value:"",
             on:{
                 onTimedKeyPress() {
-                    const inputValue = this.getValue().toLowerCase();
+                    const inputValue = this.getValue();
                     const usersList = $$("usersList");
                     const usersChart = $$("usersChart");
                     usersList.filter("#name#", inputValue);
@@ -38,10 +38,10 @@ const usersList = {
     url: usersUrl,
     template(obj) {
         return `
-          <div class='users_list'>
+        <div class='users_list'>
             <span>${highlightText(obj.name, $$("userInput").getValue())} from ${obj.country}</span>
             <span class='webix_icon wxi-close orange_hover'></span>
-          </div>
+        </div>
         `;
     },
     onClick:{

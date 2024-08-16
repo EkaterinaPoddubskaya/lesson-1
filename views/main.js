@@ -194,7 +194,7 @@ const multiview = {
     cells: [
         { id: "Dashboard", cols: [filmLibraryTable, editFilmsForm] },
         { id: "Users", rows: [ usersToolbar, usersList, usersChart] },
-        { id: "Products", template: "Products view" },
+        { id: "Products", rows: [ productsTable ] },
         { id: "Locations", template: "" }
     ]
 }
