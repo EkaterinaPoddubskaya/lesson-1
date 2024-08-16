@@ -55,7 +55,7 @@ const usersList = {
         onAfterLoad () {
             for (let i = 1; i <= 5; i++) {
                 this.addCss(i, "light_yellow");
-            }              
+            }
         }
     },
     select: true,
