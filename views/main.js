@@ -61,7 +61,7 @@ const filmLibraryTable = {
         { id: "year", header: ["Released", {content: "textFilter"}], sort: "int" },
         { id: "votes", header: ["Votes", {content: "textFilter"}], sort: "int" },
         { id: "rating", header:["Rating", {content: "textFilter"}], sort: "int" },
-        { header: "", template:"{common.trashIcon()}", css: "orange_hover" }
+        { header: "", template:"<span class='webix_icon wxi-trash'></span>", css: "orange_hover" }
     ],
     url: "data/films.js",
     scheme: {
@@ -97,7 +97,6 @@ const filmLibraryTable = {
     gravity: 3
 }
     
-
 const editFilmsForm = {
     view:"form",
     id: "filmsForm",
@@ -136,7 +135,7 @@ const editFilmsForm = {
             { 
                 view:"button", label:"Add new", css: "webix_primary", 
                 click: () => {
-                    const form = $$("filmsForm");            
+                    const form = $$("filmsForm");
                     if (form.validate()) {
                         let messageText = "";
                         const table = $$("filmsTable");
@@ -194,7 +193,7 @@ const footer = {
 const multiview = {
     cells: [
         { id: "Dashboard", cols: [filmLibraryTable, editFilmsForm] },
-        { id: "Users", template: "Users view" },
+        { id: "Users", rows: [ usersToolbar, usersList, usersChart] },
         { id: "Products", template: "Products view" },
         { id: "Locations", template: "" }
     ]
@@ -210,4 +209,4 @@ webix.ui({
         ]},
         footer
     ]
-})
+});

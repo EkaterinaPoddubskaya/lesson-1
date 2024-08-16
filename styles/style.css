@@ -33,10 +33,30 @@
     background: #F4F5F9;
 }
 
-.light_blue {
-    background: #E1EFFA;
+.light_blue,
+.users_list .webix_list_item:hover {
+    background: #ebfbff;
 }
 
-.orange_hover .wxi-trash:hover {
+.orange_hover .wxi-trash:hover,
+.orange_hover.wxi-close:hover {
     color: orange;
+}
+
+.users_list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.users_list .wxi-close {
+    display: flex;
+    align-items: center;
+}
+
+.light_yellow {
+    background: rgb(253, 249, 237);
+}
+
+ mark.blue {
+    background: rgb(203, 231, 252);
 }
