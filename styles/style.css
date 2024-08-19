@@ -29,21 +29,21 @@
     text-align: left;
 }
 
-.light_grey {
+.film_rank_color {
     background: #F4F5F9;
 }
 
-.light_blue,
+.film_hover,
 .users_list .webix_list_item:hover {
     background: #ebfbff;
 }
 
-.orange_hover .wxi-trash:hover,
-.orange_hover.wxi-close:hover {
+.icon_color_hover .wxi-trash:hover,
+.icon_color_hover.wxi-close:hover {
     color: orange;
 }
 
-.users_list {
+.userslist_item {
     display: flex;
     justify-content: space-between;
 }
@@ -53,10 +53,10 @@
     align-items: center;
 }
 
-.light_yellow {
+.userlist_item_color {
     background: rgb(255, 254, 200);
 }
 
- mark.blue {
+mark.search_substring {
     background: rgb(203, 231, 252);
 }

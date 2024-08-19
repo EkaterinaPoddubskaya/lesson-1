@@ -1,11 +1,11 @@
 const usersUrl = "data/users.js"
 
-const sortUsersButton = (direction) => { 
+const getSortUsersButton = (direction) => { 
     return { 
         view:"button", value:`Sort ${direction}`, css: "webix_primary" , autowidth: true,
         click: () =>  {
-            $$("usersList").sort("#name#", direction, "string");
-            $$("usersChart").sort("#name#", direction, "string");
+            $$("usersList").sort("#name#", direction);
+            $$("usersChart").sort("#name#", direction);
         }
     };
 }
@@ -14,7 +14,7 @@ const usersToolbar = {
     view:"toolbar",
     cols:[
         { 
-            view:"text", id:"userInput", value:"",
+            view:"text", id:"userInput",
             on:{
                 onTimedKeyPress() {
                     const inputValue = this.getValue();
@@ -22,13 +22,11 @@ const usersToolbar = {
                     const usersChart = $$("usersChart");
                     usersList.filter("#name#", inputValue);
                     usersChart.filter("#name#", inputValue);
-                    usersList.refresh();
-                    usersChart.refresh();
                 }
             }
         },
-        sortUsersButton("asc"),
-        sortUsersButton("desc")
+        getSortUsersButton("asc"),
+        getSortUsersButton("desc")
     ]
 }
 
@@ -38,14 +36,14 @@ const usersList = {
     url: usersUrl,
     template(obj) {
         return `
-        <div class='users_list'>
+        <div class='userslist_item'>
             <span>${highlightText(obj.name, $$("userInput").getValue())} from ${obj.country}</span>
-            <span class='webix_icon wxi-close orange_hover'></span>
+            <span class='webix_icon wxi-close delete_user icon_color_hover'></span>
         </div>
         `;
     },
     onClick:{
-        "wxi-close"(e, id) {
+        "delete_user"(e, id) {
             this.remove(id);
             $$("usersChart").remove(id);
             return false;
@@ -53,9 +51,10 @@ const usersList = {
     },
     on: {
         onAfterLoad () {
-            for (let i = 1; i <= 5; i++) {
-                this.addCss(i, "light_yellow");
+            for (let i = 0; i < 5; i++) { 
+                this.addCss(this.getIdByIndex(i), "userlist_item_color", true);
             }
+            this.refresh();
         }
     },
     select: true,

@@ -30,6 +30,7 @@ const sideMenuList = {
     rows: [
         {
             view:"list",
+            id: "sideMenu",
             template:"#title#",
             scroll:false,
             select: true,
@@ -37,7 +38,7 @@ const sideMenuList = {
             data:SIDE_OPTIONS,
             on: {
                 onAfterSelect:(viewId) => { 
-                  $$(viewId).show();
+                    $$(viewId)?.show();
                 }
             }
         }, 
@@ -52,47 +53,53 @@ const sideMenuList = {
     css: "side_menu"
 }
 
+let tableItemsCount = 0;
 const filmLibraryTable = {
     view:"datatable", 
     id: "filmsTable",
     columns:[
-        { id: "rank", header: "", width: 50 , css: "light_grey" },
+        { id: "rank", header: "", width: 50 , css: "film_rank_color" },
         { id: "title", header: ["Film Title", {content: "textFilter"}], sort: "string", fillspace: true, css: "left_align_text" },
         { id: "year", header: ["Released", {content: "textFilter"}], sort: "int" },
         { id: "votes", header: ["Votes", {content: "textFilter"}], sort: "int" },
         { id: "rating", header:["Rating", {content: "textFilter"}], sort: "int" },
-        { header: "", template:"<span class='webix_icon wxi-trash'></span>", css: "orange_hover" }
+        { template:"<span class='webix_icon wxi-trash delete_film'></span>", css: "icon_color_hover" }
     ],
     url: "data/films.js",
     scheme: {
-        $init(obj) {   
+        $init(obj) {
+            if (!obj.rank) obj.rank = ++tableItemsCount;
+            else if (!Number.isInteger(obj.rank)) obj.rank = +obj.rank;
+            if(!Number.isInteger(obj.year)) obj.year = +obj.year;
             if (!webix.rules.isNumber(obj.votes)) {
-                obj.rank = +obj.rank;
-                obj.year = +obj.year;
-                obj.votes = parseInt(obj.votes.replace(",", ""));
+                obj.votes = parseInt(obj.votes.replace(",", "")); 
+            }
+            if(!webix.rules.isNumber(obj.rating)) {
                 obj.rating = parseFloat(obj.rating.replace(",", "."));
-            } else {
-                const newIdRank = $$("filmsTable").count() + 1;
-                obj.id = newIdRank;
-                obj.rank = newIdRank;
             }
         },
     },
     editable: true,
     form: "filmsForm",
     onClick:{
-        "wxi-trash"(e, id) {
+        "delete_film"(e, id) {
             this.remove(id);
-            const form = $$("filmsForm");
-            if (form.getValues().id == id) {
+            const form = $$(`${this.config.form}`);
+            if (form.getValues().id === id.row) {
                 form.clear();
+                form.clearValidation();
             }
             return false;
         }
     }, 
+    on: {
+        onAfterLoad() {
+            tableItemsCount = this.count();
+        }
+    },
     select: true,
     css: "centered_text",
-    hover: "light_blue",
+    hover: "film_hover",
     scroll: "y",
     gravity: 3
 }
@@ -106,13 +113,13 @@ const editFilmsForm = {
         { rows:[ 
             { template:"Edit films", type:"section" },
             { 
-                view:"text", label:"Title", name: "title", value:"", 
+                view:"text", label:"Title", name: "title",
                 format: { parse: parseEditTitle, edit: parseEditTitle },
                 invalidMessage: "Title must not be empty", 
                 validate: webix.rules.isNotEmpty 
             },
             { 
-                view:"text", label:"Year", name: "year", id: "year", value:"", 
+                view:"text", label:"Year", name: "year", id: "year", 
                 format: { parse: parseEditYear, edit: parseEditYear },
                 validate(value) {
                     const startYear = 1921;
@@ -121,12 +128,12 @@ const editFilmsForm = {
                 }
             },
             { 
-                view:"text", label:"Rating", name: "rating", id: "rating", value:"", 
+                view:"text", label:"Rating", name: "rating", id: "rating",
                 format: { parse: parseEditRating, edit: parseEditRating }, 
                 validate: value => validateFormElements(value, "float", 0, 10, "rating")
             },
             { 
-                view:"text", label:"Votes", name: "votes", id: "votes", value:"", 
+                view:"text", label:"Votes", name: "votes", id: "votes",
                 format: { parse: parseEditVotes, edit: parseEditVotes }, 
                 validate: value => validateFormElements(value, "int", 1, 999999, "votes")
             }
@@ -134,8 +141,8 @@ const editFilmsForm = {
         { cols:[
             { 
                 view:"button", label:"Add new", css: "webix_primary", 
-                click: () => {
-                    const form = $$("filmsForm");
+                click() {
+                    const form = this.getParentView().getParentView();
                     if (form.validate()) {
                         let messageText = "";
                         const table = $$("filmsTable");
@@ -157,14 +164,14 @@ const editFilmsForm = {
             },
             { 
                 view:"button", label:"Clear",
-                click: () => {
+                click() {
                     webix.confirm({
                         title: "Form is about to be cleared",
                         text: "Do you want to clear the form?"
                     })
                     .then(
                         () => {
-                            const form = $$("filmsForm");
+                            const form = this.getParentView().getParentView();
                             form.clear();
                             form.clearValidation();
                         }
@@ -192,10 +199,10 @@ const footer = {
 
 const multiview = {
     cells: [
-        { id: "Dashboard", cols: [filmLibraryTable, editFilmsForm] },
-        { id: "Users", rows: [ usersToolbar, usersList, usersChart] },
-        { id: "Products", rows: [ productsTable ] },
-        { id: "Locations", template: "" }
+        { id: filmsViewId, cols: [filmLibraryTable, editFilmsForm] },
+        { id: usersViewId, rows: [ usersToolbar, usersList, usersChart] },
+        { id: productsViewId, rows: [ productsTable ] },
+        { id: adminsViewId }
     ]
 }
 
@@ -210,3 +217,5 @@ webix.ui({
         footer
     ]
 });
+
+$$("sideMenu").select(filmsViewId);

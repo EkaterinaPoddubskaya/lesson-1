@@ -3,14 +3,14 @@ const productsTable = {
     url: "data/products.js",
     columns:[
         { id:"id", header:"", width:50 },
-        { id:"title", header:"Title", template:"{common.treetable()} #title#", fillspace: true },
-        { id:"price", header:"Price", template(obj) {return obj.price ? `${obj.price}` : "" }, width: 500 }
+        { id:"title", header:"Title", template:"{common.treetable()} #title#", fillspace: true, minWidth: 200, maxWidth: 400 },
+        { id:"price", header:"Price", data: (obj) => obj.price ?? "" , minWidth: 70 }
     ],
     on: {
         onAfterLoad() {
             this.openAll();
         }
     },
-    select: true,
+    select: "cell",
     scroll: "y"
 }
