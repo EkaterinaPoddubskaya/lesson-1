@@ -16,10 +16,47 @@
     border-color: #eeeeee;
 }
 
-.centered-text {
+.connection .webix_template {
+    color: green;
+}
+
+.centered_text, 
+.centered_text .webix_column {
     text-align: center;
 }
 
-.connection .webix_template {
-    color: green;
+.left_align_text.webix_column {
+    text-align: left;
+}
+
+.film_rank_color {
+    background: #F4F5F9;
+}
+
+.film_hover,
+.users_list .webix_list_item:hover {
+    background: #ebfbff;
+}
+
+.icon_color_hover .wxi-trash:hover,
+.icon_color_hover.wxi-close:hover {
+    color: orange;
+}
+
+.userslist_item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.users_list .wxi-close {
+    display: flex;
+    align-items: center;
+}
+
+.userlist_item_color {
+    background: rgb(255, 254, 200);
+}
+
+mark.search_substring {
+    background: rgb(203, 231, 252);
 }
