@@ -40,6 +40,9 @@ const sideMenuList = {
                 onAfterSelect:(viewId) => { 
                     $$(viewId)?.show();
                 }
+            },
+            ready() {
+                this.select(this.getFirstId());
             }
         }, 
         {},
@@ -219,6 +222,4 @@ webix.ready(() => {
             footer
         ]
     });
-    const sideMenu =  $$("sideMenu");
-    sideMenu.select(sideMenu.getFirstId());
 });
