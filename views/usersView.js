@@ -1,12 +1,19 @@
 const usersUrl = "data/users.js"
 
-const getSortUsersButton = (direction) => { 
+const sortButtonFunction = direction => $$("usersList").sort("#name#", direction)
+
+const addButtonFunction = () => {
+    $$("usersList").add({ 
+        name: "Peter Parker", 
+        age: Math.floor(Math.random() * 100) + 1, 
+        country: COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)].value
+    });
+}
+
+const getUsersButton = (buttonName, buttonFunction, direction) => { 
     return { 
-        view:"button", value:`Sort ${direction}`, css: "webix_primary" , autowidth: true,
-        click: () =>  {
-            $$("usersList").sort("#name#", direction);
-            $$("usersChart").sort("#name#", direction);
-        }
+        view:"button", value: buttonName, css: "webix_primary" , autowidth: true,
+        click() { buttonFunction(direction) }
     };
 }
 
@@ -18,56 +25,74 @@ const usersToolbar = {
             on:{
                 onTimedKeyPress() {
                     const inputValue = this.getValue();
-                    const usersList = $$("usersList");
-                    const usersChart = $$("usersChart");
-                    usersList.filter("#name#", inputValue);
-                    usersChart.filter("#name#", inputValue);
+                    $$("usersList").filter("#name#", inputValue);
                 }
             }
         },
-        getSortUsersButton("asc"),
-        getSortUsersButton("desc")
+        getUsersButton("Sort asc", sortButtonFunction, "asc"),
+        getUsersButton("Sort desc", sortButtonFunction, "desc"),
+        getUsersButton("Add user", addButtonFunction)
     ]
 }
 
+webix.protoUI({
+    name:"editList"
+}, webix.EditAbility, webix.ui.list);
+
+let maxUsersId = 0;
 const usersList = {
-    view:"list",
+    view:"editList",
     id: "usersList",
     url: usersUrl,
     template(obj) {
         return `
         <div class='userslist_item'>
-            <span>${highlightText(obj.name, $$("userInput").getValue())} from ${obj.country}</span>
+            <span>${highlightText(obj.name, $$("userInput").getValue())}, ${obj.age}, from ${obj.country}</span>
             <span class='webix_icon wxi-close delete_user icon_color_hover'></span>
         </div>
         `;
     },
+    scheme: {
+        $init(obj) {
+            if (!obj.id) obj.id = ++maxUsersId;
+            else if (obj.id > maxUsersId) maxUsersId = obj.id;
+            if(obj.age < 26) $$(this.owner).addCss(obj.id, "userlist_item_color");
+        }
+    },
     onClick:{
         "delete_user"(e, id) {
             this.remove(id);
-            $$("usersChart").remove(id);
             return false;
         }
     },
-    on: {
-        onAfterLoad () {
-            for (let i = 0; i < 5; i++) { 
-                this.addCss(this.getIdByIndex(i), "userlist_item_color", true);
-            }
-            this.refresh();
-        }
-    },
     select: true,
-    css: "users_list"
+    css: "users_list",
+    editable:true,
+    editor:"text",
+    editValue:"name",
+    editaction:"dblclick",
+    rules: {
+        name: webix.rules.isNotEmpty
+    }
 }
 
 const usersChart = {
     view: "chart",
     id: "usersChart",
-    url: usersUrl,
     type:"bar",
-    value:"#age#",
-    xAxis: { title: "Age", template:"#age#" },
-    label:"#name#",
+    value:"#name#",
+    xAxis: { title: "Country", template:"#country#" },
+    yAxis:{ start: 0, end: 10, step: 1 },
     gravity: 2
 }
+
+webix.ready(() => {
+    $$("usersChart").sync($$("usersList"), () => {
+        $$("usersChart").group({
+            by:"country",
+            map:{
+                name:[ "name", "count" ]
+            }
+        })
+    });
+})
