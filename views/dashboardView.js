@@ -18,8 +18,8 @@ const filmLibraryTable = {
         { id: "title", header: ["Film Title", {content: "textFilter"}], sort: "string", fillspace: true, css: "left_align_text" },
         { id: "category", header: ["Category", {content: "selectFilter"}], collection: "data/categories.js", sort: "text" },
         { id: "year", header: "Released", sort: "int" },
-        { id: "votes", header: ["Votes", {content: "textFilter"}], sort: "int" },
-        { id: "rating", header:["Rating", {content: "textFilter"}], sort: "int" },
+        { id: "votes", header: ["Votes", {content: "numberFilter"}], sort: "int" },
+        { id: "rating", header:["Rating", {content: "numberFilter"}], sort: "int" },
         { template:"<span class='webix_icon wxi-trash delete_film'></span>", css: "icon_color_hover" }
     ],
     url: "data/films.js",
@@ -104,14 +104,10 @@ const editFilmsForm = {
                     const form = $$("filmsForm");
                     if (form.validate()) {
                         let messageText = "";
-                        const formId = form.getValues().id; 
-                        if (formId) {
-                            form.save();
-                            messageText = "Your changes are successfully saved!";
-                        } else {
-                            form.save();
-                            messageText = "Your film is successfully added to the list!";
-                        }
+                        const filmId = form.getValues().id; 
+                        if (filmId) messageText = "Your changes are successfully saved!";
+                        else messageText = "Your film is successfully added to the list!";
+                        form.save();
                         form.clear();
                         webix.message({
                             text: messageText,
@@ -149,9 +145,8 @@ const editFilmsForm = {
     },
     on: {
         onBindApply() {
-            if (Object.values(this.getValues()).every(v => !v)) {
-                this.clearValidation();
-            }
+            const isFormEmpty = Object.values(this.getValues()).every(v => !v);
+            if (isFormEmpty) this.clearValidation();
         }
     }
 }

@@ -16,7 +16,7 @@ const productsTable = {
     },
     scheme: {
         $update: (obj) => {
-            obj.price = parseFloat(parseFloat(obj.price).toFixed(2)); 
+            obj.price = webix.rules.isNumber(obj.price) ? parseFloat(parseFloat(obj.price).toFixed(2)) : ""
         }
     },
     select: "cell",

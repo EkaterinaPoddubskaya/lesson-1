@@ -1,20 +1,31 @@
 const usersUrl = "data/users.js"
 
-const sortButtonFunction = direction => $$("usersList").sort("#name#", direction)
+const onSortButton = direction => $$("usersList").sort("#name#", direction)
+const onSortAscButton = () => onSortButton("asc")
+const onSortDescButton = () => onSortButton("desc")
 
-const addButtonFunction = () => {
+const onAddUserButton = () => {
     $$("usersList").add({ 
         name: "Peter Parker", 
-        age: Math.floor(Math.random() * 100) + 1, 
-        country: COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)].value
+        age: getRandomNumber(1, 100), 
+        country: COUNTRIES[ getRandomNumber(0, COUNTRIES.length) ].value
     });
 }
 
-const getUsersButton = (buttonName, buttonFunction, direction) => { 
-    return { 
-        view:"button", value: buttonName, css: "webix_primary" , autowidth: true,
-        click() { buttonFunction(direction) }
-    };
+/**
+ * Creates button 
+ * @param {string} buttonName - the value(name) of the button
+ * @param {function} onButtonClick - function which gets called when the button is clicked
+ * @returns {object} config of a button 
+ */
+const getUsersButton = (buttonName, onButtonClick) => { 
+    if (typeof buttonName === 'string' && typeof onButtonClick === 'function') {
+        return { 
+            view:"button", value: buttonName, css: "webix_primary" , autowidth: true,
+            click: onButtonClick
+        };
+    } 
+    return null;
 }
 
 const usersToolbar = {
@@ -29,9 +40,9 @@ const usersToolbar = {
                 }
             }
         },
-        getUsersButton("Sort asc", sortButtonFunction, "asc"),
-        getUsersButton("Sort desc", sortButtonFunction, "desc"),
-        getUsersButton("Add user", addButtonFunction)
+        getUsersButton("Sort asc", onSortAscButton),
+        getUsersButton("Sort desc", onSortDescButton),
+        getUsersButton("Add user", onAddUserButton)
     ]
 }
 
@@ -39,7 +50,6 @@ webix.protoUI({
     name:"editList"
 }, webix.EditAbility, webix.ui.list);
 
-let maxUsersId = 0;
 const usersList = {
     view:"editList",
     id: "usersList",
@@ -54,9 +64,7 @@ const usersList = {
     },
     scheme: {
         $init(obj) {
-            if (!obj.id) obj.id = ++maxUsersId;
-            else if (obj.id > maxUsersId) maxUsersId = obj.id;
-            if(obj.age < 26) $$(this.owner).addCss(obj.id, "userlist_item_color");
+            if (obj.age < 26) obj.$css = "userlist_item_color"
         }
     },
     onClick:{
@@ -87,8 +95,9 @@ const usersChart = {
 }
 
 webix.ready(() => {
-    $$("usersChart").sync($$("usersList"), () => {
-        $$("usersChart").group({
+    const usersChart = $$("usersChart");
+    usersChart.sync($$("usersList"), () => {
+        usersChart.group({
             by:"country",
             map:{
                 name:[ "name", "count" ]
