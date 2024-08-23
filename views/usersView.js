@@ -1,10 +1,10 @@
 const usersUrl = "data/users.js"
 
-const onSortButton = direction => $$("usersList").sort("#name#", direction)
-const onSortAscButton = () => onSortButton("asc")
-const onSortDescButton = () => onSortButton("desc")
+const onSortButtonClick = direction => $$("usersList").sort("#name#", direction)
+const onSortAscButtonClick = () => onSortButtonClick("asc")
+const onSortDescButtonClick = () => onSortButtonClick("desc")
 
-const onAddUserButton = () => {
+const onAddUserButtonClick = () => {
     $$("usersList").add({ 
         name: "Peter Parker", 
         age: getRandomNumber(1, 100), 
@@ -40,9 +40,9 @@ const usersToolbar = {
                 }
             }
         },
-        getUsersButton("Sort asc", onSortAscButton),
-        getUsersButton("Sort desc", onSortDescButton),
-        getUsersButton("Add user", onAddUserButton)
+        getUsersButton("Sort asc", onSortAscButtonClick),
+        getUsersButton("Sort desc", onSortDescButtonClick),
+        getUsersButton("Add user", onAddUserButtonClick)
     ]
 }
 
