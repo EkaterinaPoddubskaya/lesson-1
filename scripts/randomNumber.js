@@ -1,1 +1,0 @@
-const getRandomNumber = (startNum, range) => Math.floor(Math.random() * range) + startNum

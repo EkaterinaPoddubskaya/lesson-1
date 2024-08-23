@@ -1,15 +1,29 @@
 const usersUrl = "data/users.js"
 
+/**
+ * Sorts usersList by name in order of direction
+ * @param {string} direction -either "asc" or "desc"
+ */
 const onSortButtonClick = direction => $$("usersList").sort("#name#", direction)
+
+/** Sorts usersList by name in ascending order */
 const onSortAscButtonClick = () => onSortButtonClick("asc")
+
+/** Sorts usersList by name in descending order */
 const onSortDescButtonClick = () => onSortButtonClick("desc")
 
+/**
+ * Adds user to usersList with random age and country, selects and shows it in the view
+ */
 const onAddUserButtonClick = () => {
-    $$("usersList").add({ 
+    const usersList = $$("usersList");
+    const userId = usersList.add({ 
         name: "Peter Parker", 
         age: getRandomNumber(1, 100), 
         country: COUNTRIES[ getRandomNumber(0, COUNTRIES.length) ].value
     });
+    usersList.select(userId);
+    usersList.showItem(userId);
 }
 
 /**
@@ -19,13 +33,11 @@ const onAddUserButtonClick = () => {
  * @returns {object} config of a button 
  */
 const getUsersButton = (buttonName, onButtonClick) => { 
-    if (typeof buttonName === 'string' && typeof onButtonClick === 'function') {
-        return { 
-            view:"button", value: buttonName, css: "webix_primary" , autowidth: true,
-            click: onButtonClick
-        };
-    } 
-    return null;
+    if (typeof buttonName !== 'string' || typeof onButtonClick !== 'function') return null;
+    return { 
+        view:"button", value: buttonName, css: "webix_primary" , autowidth: true,
+        click: onButtonClick
+    };
 }
 
 const usersToolbar = {

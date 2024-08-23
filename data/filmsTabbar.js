@@ -12,6 +12,12 @@ const FILMS_TAB_IDS = {
     NEW: "new" 
 }
 
+/**
+ * Creates a tab with tabName as a name
+ * @param {string | number} tabId 
+ * @param {string | number} tabName 
+ * @returns {object} config of a tab
+ */
 const getTabbarOption = (tabId, tabName) => {
     return { id: tabId, value: tabName, width: 150 }
 }

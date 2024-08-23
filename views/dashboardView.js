@@ -16,7 +16,7 @@ const filmLibraryTable = {
     columns:[
         { id: "rank", header: "#", width: 50 , css: "film_rank_color", sort: "int" },
         { id: "title", header: ["Film Title", {content: "textFilter"}], sort: "string", fillspace: true, css: "left_align_text" },
-        { id: "category", header: ["Category", {content: "selectFilter"}], collection: "data/categories.js", sort: "text" },
+        { id: "category", header: ["Category", {content: "selectFilter"}], collection: CATEGORIES, sort: "text" },
         { id: "year", header: "Released", sort: "int" },
         { id: "votes", header: ["Votes", {content: "numberFilter"}], sort: "int" },
         { id: "rating", header:["Rating", {content: "numberFilter"}], sort: "int" },
@@ -35,7 +35,7 @@ const filmLibraryTable = {
             if(!webix.rules.isNumber(obj.rating)) {
                 obj.rating = parseFloat(obj.rating.replace(",", "."));
             }
-            obj.category = Math.floor(Math.random() * 4) + 1;
+            obj.category = CATEGORIES.at(getRandomNumber(0, CATEGORIES.length)).id;
         }
     },
     onClick: {
@@ -73,13 +73,13 @@ const editFilmsForm = {
             { template:"Edit films", type:"section" },
             { 
                 view:"text", label:"Title", name: "title",
-                format: { parse: parseEditTitle, edit: parseEditTitle },
+                format: { parse: formatText, edit: formatText },
                 invalidMessage: "Title must not be empty", 
                 validate: webix.rules.isNotEmpty 
             },
             { 
                 view:"text", label:"Year", name: "year", id: "year", 
-                format: { parse: parseEditYear, edit: parseEditYear },
+                format: { parse: parseIntegerValue, edit: parseIntegerValue },
                 validate(value) {
                     const startYear = 1921;
                     const currentYear = new Date().getFullYear();
@@ -88,12 +88,12 @@ const editFilmsForm = {
             },
             { 
                 view:"text", label:"Rating", name: "rating", id: "rating",
-                format: { parse: parseEditRating, edit: parseEditRating }, 
+                format: { parse: parseFloatValue, edit: parseFloatValue }, 
                 validate: value => validateFormElements(value, "float", 0, 10, "rating")
             },
             { 
                 view:"text", label:"Votes", name: "votes", id: "votes",
-                format: { parse: parseEditVotes, edit: parseEditVotes }, 
+                format: { parse: parseIntegerValue, edit: parseIntegerValue }, 
                 validate: value => validateFormElements(value, "int", 1, 999999, "votes")
             }
         ]},
@@ -103,10 +103,8 @@ const editFilmsForm = {
                 click() {
                     const form = $$("filmsForm");
                     if (form.validate()) {
-                        let messageText = "";
                         const filmId = form.getValues().id; 
-                        if (filmId) messageText = "Your changes are successfully saved!";
-                        else messageText = "Your film is successfully added to the list!";
+                        const messageText =  filmId ? "Your changes are successfully saved!" : "Your film is successfully added to the list!";
                         form.save();
                         form.clear();
                         webix.message({
