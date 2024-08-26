@@ -1,27 +1,34 @@
-const usersUrl = "data/users.js"
+const userCollection = new webix.DataCollection({
+    url: "data/users.js",
+    scheme: {
+        $init(obj) {
+            if (obj.age < 26) obj.$css = "user_under_26"
+        }
+    }
+});
 
 /**
- * Sorts usersList by name in order of direction
+ * Sorts userCollection by name in order of direction
  * @param {string} direction -either "asc" or "desc"
  */
-const onSortButtonClick = direction => $$("usersList").sort("#name#", direction)
+const onSortButtonClick = direction => userCollection.sort("#name#", direction)
 
-/** Sorts usersList by name in ascending order */
+/** Sorts userCollection by name in ascending order */
 const onSortAscButtonClick = () => onSortButtonClick("asc")
 
-/** Sorts usersList by name in descending order */
+/** Sorts userCollection by name in descending order */
 const onSortDescButtonClick = () => onSortButtonClick("desc")
 
 /**
- * Adds user to usersList with random age and country, selects and shows it in the view
+ * Adds user to userCollection with random age and country, selects and shows it in the view
  */
 const onAddUserButtonClick = () => {
-    const usersList = $$("usersList");
-    const userId = usersList.add({ 
+    const userId = userCollection.add({ 
         name: "Peter Parker", 
         age: getRandomNumber(1, 100), 
         country: COUNTRIES[ getRandomNumber(0, COUNTRIES.length) ].value
     });
+    const usersList = $$("usersList");
     usersList.select(userId);
     usersList.showItem(userId);
 }
@@ -32,7 +39,7 @@ const onAddUserButtonClick = () => {
  * @param {function} onButtonClick - function which gets called when the button is clicked
  * @returns {object} config of a button 
  */
-const getUsersButton = (buttonName, onButtonClick) => { 
+const getPrimaryButton = (buttonName, onButtonClick) => { 
     if (typeof buttonName !== 'string' || typeof onButtonClick !== 'function') return null;
     return { 
         view:"button", value: buttonName, css: "webix_primary" , autowidth: true,
@@ -52,9 +59,9 @@ const usersToolbar = {
                 }
             }
         },
-        getUsersButton("Sort asc", onSortAscButtonClick),
-        getUsersButton("Sort desc", onSortDescButtonClick),
-        getUsersButton("Add user", onAddUserButtonClick)
+        getPrimaryButton("Sort asc", onSortAscButtonClick),
+        getPrimaryButton("Sort desc", onSortDescButtonClick),
+        getPrimaryButton("Add user", onAddUserButtonClick)
     ]
 }
 
@@ -65,7 +72,6 @@ webix.protoUI({
 const usersList = {
     view:"editList",
     id: "usersList",
-    url: usersUrl,
     template(obj) {
         return `
         <div class='userslist_item'>
@@ -74,14 +80,9 @@ const usersList = {
         </div>
         `;
     },
-    scheme: {
-        $init(obj) {
-            if (obj.age < 26) obj.$css = "userlist_item_color"
-        }
-    },
     onClick:{
         "delete_user"(e, id) {
-            this.remove(id);
+            userCollection.remove(id);
             return false;
         }
     },
@@ -107,8 +108,9 @@ const usersChart = {
 }
 
 webix.ready(() => {
+    $$("usersList").sync(userCollection);
     const usersChart = $$("usersChart");
-    usersChart.sync($$("usersList"), () => {
+    usersChart.sync(userCollection, () => {
         usersChart.group({
             by:"country",
             map:{

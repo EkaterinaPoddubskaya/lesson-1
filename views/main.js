@@ -61,7 +61,7 @@ const multiview = {
         { id: MULTIVIEW_IDS.FILMS_VIEW_ID, cols: [ filmsLibrary, editFilmsForm ] },
         { id: MULTIVIEW_IDS.USERS_VIEW_ID, rows: [ usersToolbar, usersList, usersChart ] },
         { id: MULTIVIEW_IDS.PRODUCTS_VIEW_ID, rows: [ productsTable ] },
-        { id: MULTIVIEW_IDS.ADMINS_VIEW_ID }
+        { id: MULTIVIEW_IDS.ADMINS_VIEW_ID, rows: [ categoriesToolbar, categoriesTable ] }
     ]
 }
 

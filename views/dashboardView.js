@@ -9,6 +9,10 @@ const filmsYearTabbar = {
     }
 };
 
+const categoryCollection = new webix.DataCollection({
+    data: CATEGORIES
+});
+
 let maxRank = 0;
 const filmLibraryTable = {
     view:"datatable", 
@@ -16,7 +20,7 @@ const filmLibraryTable = {
     columns:[
         { id: "rank", header: "#", width: 50 , css: "film_rank_color", sort: "int" },
         { id: "title", header: ["Film Title", {content: "textFilter"}], sort: "string", fillspace: true, css: "left_align_text" },
-        { id: "category", header: ["Category", {content: "selectFilter"}], collection: CATEGORIES, sort: "text" },
+        { id: "category", header: ["Category", {content: "selectFilter"}], collection: categoryCollection, sort: "text" },
         { id: "year", header: "Released", sort: "int" },
         { id: "votes", header: ["Votes", {content: "numberFilter"}], sort: "int" },
         { id: "rating", header:["Rating", {content: "numberFilter"}], sort: "int" },
@@ -35,7 +39,8 @@ const filmLibraryTable = {
             if(!webix.rules.isNumber(obj.rating)) {
                 obj.rating = parseFloat(obj.rating.replace(",", "."));
             }
-            obj.category = CATEGORIES.at(getRandomNumber(0, CATEGORIES.length)).id;
+            if (obj.category) obj.category = +obj.category;
+            else obj.category = CATEGORIES[getRandomNumber(0, CATEGORIES.length)].id;
         }
     },
     onClick: {
@@ -75,6 +80,12 @@ const editFilmsForm = {
                 view:"text", label:"Title", name: "title",
                 format: { parse: formatText, edit: formatText },
                 invalidMessage: "Title must not be empty", 
+                validate: webix.rules.isNotEmpty 
+            },
+            {
+                view:"richselect", label: "Category", name: "category",
+                options: categoryCollection,
+                invalidMessage: "Category must not be empty", 
                 validate: webix.rules.isNotEmpty 
             },
             { 
