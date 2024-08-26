@@ -40,7 +40,7 @@ const filmLibraryTable = {
                 obj.rating = parseFloat(obj.rating.replace(",", "."));
             }
             if (obj.category) obj.category = +obj.category;
-            else obj.category = CATEGORIES.at(getRandomNumber(0, CATEGORIES.length)).id;
+            else obj.category = CATEGORIES[getRandomNumber(0, CATEGORIES.length)].id;
         }
     },
     onClick: {
@@ -84,7 +84,7 @@ const editFilmsForm = {
             },
             {
                 view:"richselect", label: "Category", name: "category",
-                options: { data:categoryCollection },
+                options: categoryCollection,
                 invalidMessage: "Category must not be empty", 
                 validate: webix.rules.isNotEmpty 
             },

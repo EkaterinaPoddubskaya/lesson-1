@@ -2,7 +2,7 @@ const userCollection = new webix.DataCollection({
     url: "data/users.js",
     scheme: {
         $init(obj) {
-            if (obj.age < 26) obj.$css = "userlist_item_color"
+            if (obj.age < 26) obj.$css = "user_under_26"
         }
     }
 });

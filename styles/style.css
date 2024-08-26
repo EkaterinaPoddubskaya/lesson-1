@@ -53,7 +53,7 @@
     align-items: center;
 }
 
-.userlist_item_color {
+.users_list .user_under_26 {
     background: rgb(255, 254, 200);
 }
 
